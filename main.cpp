@@ -152,6 +152,10 @@ public:
         free(root);
     }
 
+    void insert(key_t key, priority_t priority = rand(), data_t data = data_t()) {
+        find
+    }
+
 private:
     struct node_t {
         node_t(key_t key, data_t data = data_t(), priority_t priority = rand()):
@@ -169,7 +173,7 @@ private:
         node_t * right;
     };
 
-    node_t * merge(node_t * left, node_t * right) {
+    static node_t * merge(node_t * left, node_t * right) {
         if (left == 0) {
             return right;
         }
@@ -184,6 +188,22 @@ private:
         } else {
             left->right = merge(left->right, right);
             return left;
+        }
+    }
+
+    static void split(node_t * root, key_t key, node_t *& left, node_t *& right) {
+        if (root == 0) {
+            left = 0;
+            right = 0;
+            return;
+        }
+
+        if (root->key < key) {
+            split(root->right, key, root->right, right);
+            left = root;
+        } else {
+            split(root->left, key, left, root->left);
+            right = root;
         }
     }
 
@@ -209,6 +229,7 @@ void printNode(key_t key, data_t) {
 int main()
 {
     TNaivBinaryTree naiveTree;
+    TTreap treap;
 
     size_t size = 0;
     cin >> size;
@@ -219,6 +240,7 @@ int main()
     }
 
     naiveTree.levelOrderTraverse(printNode);
+    cout << endl;
     return 0;
 }
 
