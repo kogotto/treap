@@ -9,12 +9,14 @@
 
 #include <iostream>
 #include <queue>
+#include <stdlib.h>
 
 using namespace std;
 
 
 typedef int key_t;
 typedef struct {} data_t;
+typedef int priority_t;
 
 
 class TNaivBinaryTree {
@@ -126,6 +128,66 @@ private:
     }
 
     static void free(node_t * node) {
+        if (node == 0) {
+            return;
+        }
+
+        free(node->left);
+        free(node->right);
+
+        delete node;
+    }
+
+    node_t * root;
+};
+
+
+class TTreap {
+public:
+    TTreap():
+        root(0)
+    {}
+
+    ~TTreap() {
+        free(root);
+    }
+
+private:
+    struct node_t {
+        node_t(key_t key, data_t data = data_t(), priority_t priority = rand()):
+            key(key),
+            data(data),
+            priority(priority),
+            left(0),
+            right(0)
+        {}
+
+        key_t key;
+        data_t data;
+        priority_t priority;
+        node_t * left;
+        node_t * right;
+    };
+
+    node_t * merge(node_t * left, node_t * right) {
+        if (left == 0) {
+            return right;
+        }
+
+        if (right == 0) {
+            return left;
+        }
+
+        if (left->priority < right->priority) {
+            right->left = merge(left, right->left);
+            return right;
+        } else {
+            left->right = merge(left->right, right);
+            return left;
+        }
+    }
+
+    static void free(const node_t * node) {
         if (node == 0) {
             return;
         }
