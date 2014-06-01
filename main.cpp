@@ -153,22 +153,24 @@ public:
     }
 
     void insert(key_t key, priority_t priority = rand(), data_t data = data_t()) {
-        find
+        node_t * current = find(root, key, priority);
+        node_t * newNode = new node_t(key, priority, data);
+        split(current, key, newNode->left, newNode->right);
     }
 
 private:
     struct node_t {
-        node_t(key_t key, data_t data = data_t(), priority_t priority = rand()):
+        node_t(key_t key, priority_t priority = rand(), data_t data = data_t()):
             key(key),
-            data(data),
             priority(priority),
+            data(data),
             left(0),
             right(0)
         {}
 
         key_t key;
-        data_t data;
         priority_t priority;
+        data_t data;
         node_t * left;
         node_t * right;
     };
