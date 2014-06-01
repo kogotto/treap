@@ -271,16 +271,15 @@ int main()
     size_t size = 0;
     cin >> size;
     for (size_t i = 0; i < size; ++i) {
-        key_t key;
+        key_t key = 0;
         cin >> key;
+        priority_t priority = 0;
+        cin >> priority;
         naiveTree.insert(key);
-        treap.insert(key);
+        treap.insert(key, priority);
     }
 
-    naiveTree.levelOrderTraverse(printNode);
-    cout << endl << naiveTree.height() << endl;
-    naiveTree.levelOrderTraverse(printNode);
-    cout << endl << treap.height() << endl;
+    cout << naiveTree.height() - treap.height();
     return 0;
 }
 
