@@ -34,6 +34,10 @@ public:
         insert(&root, node);
     }
 
+    size_t height() const {
+        return height(root);
+    }
+
     template<class action_t>
     void inOrderTraverse(const action_t & action) {
         inOrderTraverse(root, action);
@@ -92,6 +96,14 @@ private:
         } else {
             insert(&((*root)->right), node);
         }
+    }
+
+    static size_t height(node_t * root) {
+        if (root == 0) {
+            return 0;
+        }
+
+        return max(height(root->left), height(root->right)) + 1;
     }
 
     template<class action_t>
@@ -153,9 +165,14 @@ public:
     }
 
     void insert(key_t key, priority_t priority = rand(), data_t data = data_t()) {
-        node_t * current = find(root, key, priority);
+        node_t *& current = baseFind(root, key, priority);
         node_t * newNode = new node_t(key, priority, data);
         split(current, key, newNode->left, newNode->right);
+        current = newNode;
+    }
+
+    size_t height() const {
+        return height(root);
     }
 
 private:
@@ -174,6 +191,24 @@ private:
         node_t * left;
         node_t * right;
     };
+
+    static node_t *& baseFind(node_t *& root, key_t key, priority_t priority) {
+        if (root == 0 || root->priority < priority) {
+            return root;
+        }
+
+        node_t *& next = (key < root->key)? root->left: root->right;
+
+        return baseFind(next, key, priority);
+    }
+
+    static size_t height(const node_t * root) {
+        if (root == 0) {
+            return 0;
+        }
+
+        return max(height(root->left), height(root->right)) +1;
+    }
 
     static node_t * merge(node_t * left, node_t * right) {
         if (left == 0) {
@@ -239,10 +274,13 @@ int main()
         key_t key;
         cin >> key;
         naiveTree.insert(key);
+        treap.insert(key);
     }
 
     naiveTree.levelOrderTraverse(printNode);
-    cout << endl;
+    cout << endl << naiveTree.height() << endl;
+    naiveTree.levelOrderTraverse(printNode);
+    cout << endl << treap.height() << endl;
     return 0;
 }
 
